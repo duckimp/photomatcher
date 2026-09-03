@@ -1,5 +1,6 @@
 import React from 'react';
 import { Heart, Coffee, MessageSquare, Globe } from 'lucide-react';
+import { openExternalUrl } from '../utils/linkOpener';
 
 function GithubIcon({ className = 'w-3.5 h-3.5' }) {
   return (
@@ -30,14 +31,12 @@ export default function Footer({ onOpenDonate, onOpenFeedback }) {
         <span className="text-slate-300 dark:text-zinc-700">•</span>
         <span className="flex items-center gap-1">
           Developed by{' '}
-          <a
-            href={portfolioUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={(e) => openExternalUrl(portfolioUrl, e)}
             className="font-bold text-slate-800 dark:text-zinc-200 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
           >
             AM-Lab
-          </a>
+          </button>
         </span>
         <span className="text-slate-300 dark:text-zinc-700 hidden sm:inline">•</span>
         <span className="hidden sm:inline text-slate-400 dark:text-zinc-500 font-mono text-[10px]">
@@ -60,39 +59,33 @@ export default function Footer({ onOpenDonate, onOpenFeedback }) {
           className="hidden md:flex items-center gap-1 px-2 py-0.5 rounded-full bg-slate-100 dark:bg-zinc-800 hover:bg-purple-50 dark:hover:bg-purple-950/50 border border-slate-200 dark:border-zinc-700 hover:border-purple-300 text-slate-600 dark:text-zinc-300 hover:text-purple-600 dark:hover:text-purple-300 text-[11px] transition-colors"
         >
           <MessageSquare className="w-3 h-3" />
-          <span>Kritik & Saran</span>
+          <span>Kritik &amp; Saran</span>
         </button>
       </div>
 
       {/* Right Social Links */}
       <div className="flex items-center gap-3 text-slate-400 dark:text-zinc-500">
-        <a
-          href={githubUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+        <button
+          onClick={(e) => openExternalUrl(githubUrl, e)}
           className="hover:text-slate-900 dark:hover:text-white transition-colors"
           title="GitHub @duckimp"
         >
           <GithubIcon className="w-3.5 h-3.5" />
-        </a>
-        <a
-          href={tiktokUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+        </button>
+        <button
+          onClick={(e) => openExternalUrl(tiktokUrl, e)}
           className="hover:text-pink-500 dark:hover:text-pink-400 transition-colors"
           title="TikTok @frc1803"
         >
           <TikTokIcon className="w-3.5 h-3.5" />
-        </a>
-        <a
-          href={portfolioUrl}
-          target="_blank"
-          rel="noopener noreferrer"
+        </button>
+        <button
+          onClick={(e) => openExternalUrl(portfolioUrl, e)}
           className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
           title="Portofolio duckimp.vercel.app"
         >
           <Globe className="w-3.5 h-3.5" />
-        </a>
+        </button>
         <button
           onClick={onOpenFeedback}
           className="hover:text-purple-600 dark:hover:text-purple-400 transition-colors text-[11px] font-medium"

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, MessageSquare, Mail, Globe, Send, Copy, Check, ExternalLink, Heart, Coffee } from 'lucide-react';
 import qrSaweriaImg from '../assets/QRsaweria.png';
+import { openExternalUrl } from '../utils/linkOpener';
 
 function GithubIcon({ className = 'w-4 h-4' }) {
   return (
@@ -37,10 +38,10 @@ export default function FeedbackModal({ isOpen, onClose }) {
     setTimeout(() => setCopiedEmail(false), 2000);
   };
 
-  const handleSendEmail = (e) => {
+  const handleSendEmail = async (e) => {
     e.preventDefault();
     const mailtoLink = `mailto:${email}?subject=${encodeURIComponent(subject || 'Kritik & Saran PhotoMatcher.id')}&body=${encodeURIComponent(message)}`;
-    window.location.href = mailtoLink;
+    await openExternalUrl(mailtoLink);
   };
 
   return (
@@ -88,11 +89,9 @@ export default function FeedbackModal({ isOpen, onClose }) {
                   </p>
                 </div>
 
-                <a
-                  href={saweriaUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center gap-2 p-2.5 bg-white dark:bg-zinc-900 hover:bg-amber-100 dark:hover:bg-zinc-800 border border-amber-300 dark:border-zinc-600 rounded-xl transition-all group shadow-sm"
+                <button
+                  onClick={(e) => openExternalUrl(saweriaUrl, e)}
+                  className="flex items-center gap-2 p-2.5 w-full bg-white dark:bg-zinc-900 hover:bg-amber-100 dark:hover:bg-zinc-800 border border-amber-300 dark:border-zinc-600 rounded-xl transition-all group shadow-sm text-left"
                 >
                   <div className="p-1.5 bg-amber-500 text-white rounded-lg group-hover:scale-110 transition-transform">
                     <Coffee className="w-4 h-4" />
@@ -102,7 +101,7 @@ export default function FeedbackModal({ isOpen, onClose }) {
                     <p className="text-[11px] font-mono font-semibold text-amber-600 dark:text-amber-400">Rp 10.000</p>
                   </div>
                   <ExternalLink className="w-3.5 h-3.5 text-slate-400 ml-auto opacity-70 group-hover:opacity-100" />
-                </a>
+                </button>
               </div>
 
               {/* Right: QR Code with White Background */}
@@ -130,11 +129,9 @@ export default function FeedbackModal({ isOpen, onClose }) {
             </p>
             <div className="grid grid-cols-2 gap-2.5">
               {/* GitHub */}
-              <a
-                href={githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700/80 border border-slate-200 dark:border-zinc-700 transition-all group shadow-sm"
+              <button
+                onClick={(e) => openExternalUrl(githubUrl, e)}
+                className="flex items-center gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700/80 border border-slate-200 dark:border-zinc-700 transition-all group shadow-sm w-full text-left"
               >
                 <div className="p-2 bg-slate-900 text-white rounded-xl">
                   <GithubIcon className="w-4 h-4" />
@@ -144,14 +141,12 @@ export default function FeedbackModal({ isOpen, onClose }) {
                   <p className="text-[10px] text-slate-500 dark:text-zinc-400 truncate">@duckimp</p>
                 </div>
                 <ExternalLink className="w-3.5 h-3.5 text-slate-400 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
-              </a>
+              </button>
 
               {/* TikTok */}
-              <a
-                href={tiktokUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700/80 border border-slate-200 dark:border-zinc-700 transition-all group shadow-sm"
+              <button
+                onClick={(e) => openExternalUrl(tiktokUrl, e)}
+                className="flex items-center gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700/80 border border-slate-200 dark:border-zinc-700 transition-all group shadow-sm w-full text-left"
               >
                 <div className="p-2 bg-pink-600 text-white rounded-xl">
                   <TikTokIcon className="w-4 h-4" />
@@ -161,14 +156,12 @@ export default function FeedbackModal({ isOpen, onClose }) {
                   <p className="text-[10px] text-slate-500 dark:text-zinc-400 truncate">@frc1803</p>
                 </div>
                 <ExternalLink className="w-3.5 h-3.5 text-slate-400 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
-              </a>
+              </button>
 
               {/* Portfolio */}
-              <a
-                href={portfolioUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700/80 border border-slate-200 dark:border-zinc-700 transition-all group shadow-sm"
+              <button
+                onClick={(e) => openExternalUrl(portfolioUrl, e)}
+                className="flex items-center gap-2.5 p-3 rounded-2xl bg-slate-50 dark:bg-zinc-800 hover:bg-slate-100 dark:hover:bg-zinc-700/80 border border-slate-200 dark:border-zinc-700 transition-all group shadow-sm w-full text-left"
               >
                 <div className="p-2 bg-purple-600 text-white rounded-xl">
                   <Globe className="w-4 h-4" />
@@ -178,7 +171,7 @@ export default function FeedbackModal({ isOpen, onClose }) {
                   <p className="text-[10px] text-slate-500 dark:text-zinc-400 truncate">duckimp.vercel.app</p>
                 </div>
                 <ExternalLink className="w-3.5 h-3.5 text-slate-400 ml-auto opacity-0 group-hover:opacity-100 transition-opacity" />
-              </a>
+              </button>
 
               {/* Email Direct */}
               <button

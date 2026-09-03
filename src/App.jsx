@@ -10,6 +10,7 @@ import ConfirmDeleteModal from './components/ConfirmDeleteModal';
 import DonateModal from './components/DonateModal';
 import FeedbackModal from './components/FeedbackModal';
 import Footer from './components/Footer';
+import Toast from './components/Toast';
 import { extractAvailableTags, formatStudentFilename } from './utils/namingEngine';
 import { generateDemoDataset } from './utils/sampleData';
 import { saveDraftState, loadDraftState, clearDraftState } from './utils/storage';
@@ -45,6 +46,7 @@ export default function App() {
   const [isConfirmDeleteOpen, setIsConfirmDeleteOpen] = useState(false);
   const [isDonateOpen, setIsDonateOpen] = useState(false);
   const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
+  const [toast, setToast] = useState(null); // { type, title, message, actionLabel, onAction }
   const [isAutoSaved, setIsAutoSaved] = useState(true);
 
   // Sync theme with document class and localStorage
@@ -564,6 +566,7 @@ export default function App() {
           activeClass={activeClass}
           onSelectClass={setActiveClass}
           studentsCountByClass={studentsCountByClass}
+          onShowToast={setToast}
         />
 
         {/* Zone 2 & Zone 3: Center Split Area (Top: Photo Pool, Bottom: Student Table) */}
@@ -652,6 +655,12 @@ export default function App() {
       <FeedbackModal
         isOpen={isFeedbackOpen}
         onClose={() => setIsFeedbackOpen(false)}
+      />
+
+      {/* In-App Toast Notification */}
+      <Toast
+        toast={toast}
+        onClose={() => setToast(null)}
       />
     </div>
   );

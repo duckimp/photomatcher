@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { X, Coffee, Heart, ExternalLink, Copy, Check, Sparkles, QrCode } from 'lucide-react';
 import qrSaweriaImg from '../assets/QRsaweria.png';
+import { openExternalUrl } from '../utils/linkOpener';
 
 export default function DonateModal({ isOpen, onClose }) {
   const [copied, setCopied] = useState(false);
@@ -65,11 +66,9 @@ export default function DonateModal({ isOpen, onClose }) {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
             {/* Left Column: Button Kopi Santai + Direct Link */}
             <div className="flex flex-col gap-2.5 h-full justify-between">
-              <a
-                href={saweriaUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="p-3.5 bg-amber-50/80 hover:bg-amber-100 dark:bg-zinc-800/80 dark:hover:bg-amber-950/40 border border-amber-200 dark:border-zinc-700 hover:border-amber-400 dark:hover:border-amber-600 rounded-2xl transition-all group shadow-sm flex flex-col justify-center h-full"
+              <button
+                onClick={(e) => openExternalUrl(saweriaUrl, e)}
+                className="p-3.5 bg-amber-50/80 hover:bg-amber-100 dark:bg-zinc-800/80 dark:hover:bg-amber-950/40 border border-amber-200 dark:border-zinc-700 hover:border-amber-400 dark:hover:border-amber-600 rounded-2xl transition-all group shadow-sm flex flex-col justify-center h-full w-full text-left"
               >
                 <div className="flex items-center gap-2">
                   <div className="p-2 bg-amber-500 text-white rounded-xl shadow-sm group-hover:scale-110 transition-transform">
@@ -85,9 +84,9 @@ export default function DonateModal({ isOpen, onClose }) {
                   </div>
                 </div>
                 <p className="text-[10px] text-slate-500 dark:text-zinc-400 mt-2 leading-relaxed">
-                  Penambah fokus & booster ngoding fitur-fitur baru!
+                  Penambah fokus &amp; booster ngoding fitur-fitur baru!
                 </p>
-              </a>
+              </button>
 
               {/* Supported Payment badges */}
               <div className="p-2 bg-slate-50 dark:bg-zinc-800/60 border border-slate-200 dark:border-zinc-700 rounded-xl">
@@ -142,16 +141,14 @@ export default function DonateModal({ isOpen, onClose }) {
           >
             Mungkin Nanti
           </button>
-          <a
-            href={saweriaUrl}
-            target="_blank"
-            rel="noopener noreferrer"
+          <button
+            onClick={(e) => openExternalUrl(saweriaUrl, e)}
             className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white rounded-xl text-xs font-bold shadow-lg shadow-amber-500/25 transition-all transform hover:scale-[1.02]"
           >
             <Coffee className="w-4 h-4" />
             <span>Buka Saweria AM-Lab</span>
             <ExternalLink className="w-3.5 h-3.5 opacity-80" />
-          </a>
+          </button>
         </div>
       </div>
     </div>

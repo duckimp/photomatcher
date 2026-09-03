@@ -1,7 +1,8 @@
 import React, { useRef, useState } from 'react';
-import { Folder, FolderOpen, Upload, FileSpreadsheet, FileDown, Plus, CheckCircle2, ChevronRight, Layers, Sparkles } from 'lucide-react';
+import { Folder, FolderOpen, Upload, FileSpreadsheet, FileDown, Plus, CheckCircle2, ChevronRight, Layers, Sparkles, Loader2, Check } from 'lucide-react';
 import { parseExcelFile, downloadSampleExcelTemplate } from '../utils/excelParser';
 import { parseDroppedItems, parseInputFiles } from '../utils/folderReader';
+import { openDownloadsFolder } from '../utils/fileOpener';
 
 export default function ExplorerPanel({
   onExcelLoaded,
@@ -13,12 +14,44 @@ export default function ExplorerPanel({
   activeClass,
   onSelectClass,
   studentsCountByClass = {},
+  onShowToast,
 }) {
   const [isDraggingOver, setIsDraggingOver] = useState(false);
   const [loadingText, setLoadingText] = useState('');
+  const [downloadTemplateStatus, setDownloadTemplateStatus] = useState('idle'); // 'idle' | 'downloading' | 'success'
   const excelInputRef = useRef(null);
   const folderInputRef = useRef(null);
   const photoInputRef = useRef(null);
+
+  // Handle Download Sample Excel Template with In-App Toast & Open Folder action
+  const handleDownloadSampleTemplate = async () => {
+    if (downloadTemplateStatus !== 'idle') return; // Prevent spam click duplicate downloads
+
+    try {
+      setDownloadTemplateStatus('downloading');
+      downloadSampleExcelTemplate();
+
+      // Trigger In-App Toast notification
+      if (onShowToast) {
+        onShowToast({
+          type: 'excel',
+          title: 'Template Excel Berhasil Diunduh!',
+          message: 'File "Template_Data_Siswa_PhotoMatcher.xlsx" telah tersimpan di folder Downloads perangkatmu.',
+          actionLabel: 'Buka Folder Download',
+          onAction: openDownloadsFolder,
+          duration: 6000,
+        });
+      }
+
+      setDownloadTemplateStatus('success');
+      setTimeout(() => {
+        setDownloadTemplateStatus('idle');
+      }, 2500);
+    } catch (err) {
+      alert(`Gagal mengunduh template: ${err.message}`);
+      setDownloadTemplateStatus('idle');
+    }
+  };
 
   // Handle Excel Upload
   const handleExcelChange = async (e) => {
@@ -179,11 +212,32 @@ export default function ExplorerPanel({
           </button>
 
           <button
-            onClick={downloadSampleExcelTemplate}
-            className="w-full flex items-center justify-center gap-1.5 py-1 text-[10px] text-slate-500 hover:text-slate-800 dark:text-zinc-400 dark:hover:text-zinc-200 transition-colors"
+            onClick={handleDownloadSampleTemplate}
+            disabled={downloadTemplateStatus !== 'idle'}
+            className={`w-full flex items-center justify-center gap-1.5 py-1 px-2 text-[10px] rounded-lg transition-all ${
+              downloadTemplateStatus === 'success'
+                ? 'bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 font-semibold border border-emerald-200 dark:border-emerald-800'
+                : downloadTemplateStatus === 'downloading'
+                ? 'text-purple-600 dark:text-purple-400 bg-purple-50 dark:bg-purple-950/40 cursor-wait'
+                : 'text-slate-500 hover:text-slate-800 dark:text-zinc-400 dark:hover:text-zinc-200 hover:bg-slate-100 dark:hover:bg-zinc-800'
+            }`}
           >
-            <FileDown className="w-3 h-3 text-slate-400 dark:text-zinc-500" />
-            <span>Unduh Contoh Format Excel</span>
+            {downloadTemplateStatus === 'downloading' ? (
+              <>
+                <Loader2 className="w-3 h-3 animate-spin text-purple-600 dark:text-purple-400" />
+                <span>Mengunduh Template...</span>
+              </>
+            ) : downloadTemplateStatus === 'success' ? (
+              <>
+                <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
+                <span>Format Terunduh! ✓</span>
+              </>
+            ) : (
+              <>
+                <FileDown className="w-3 h-3 text-slate-400 dark:text-zinc-500" />
+                <span>Unduh Contoh Format Excel</span>
+              </>
+            )}
           </button>
         </div>
 
