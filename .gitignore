@@ -1,0 +1,35 @@
+# Dependencies
+node_modules
+.pnp
+.pnp.js
+
+# Production build
+dist
+dist-ssr
+*.local
+
+# Tauri build artifacts
+src-tauri/target
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# OS Files
+.DS_Store
+Thumbs.db
+
+# IDE & Environment
+.idea
+.vscode
+*.sublime-project
+*.sublime-workspace
+.env
+.env.local
+.env.*.local
+
+# Temp media storage
+.tempmediaStorage

@@ -1,0 +1,107 @@
+Bagaimana jika aku membuat aplikasi nya, dimana ada ada tabel siswa nih, nah dibawah itu ada tempat upload foto dan ada preview, gui nya mirip dengan photoscape ini, diatas ada kumpulan filenya, sedangkan di tengahnya ada tabel siswa yg diimport dari excel,
+
+
+
+naah, biasanya kalo pake advanced tdi gk tau takutnya fotonya bisa saja lebih dulu absen tengah dari pada absen awal
+
+
+
+Nah untuk aplikasi ini tinggal drag&drop ke row siswa nya, nanti disamping kanan ada preview kecil untuk mengkonfirmasi apakah sudah benar, dan baris foto di panel atas itu akan hilang krna sudah dipindahkan ke tabel, setelah selesai semua, tinggal download foto yg format download namanya otomatis jadi nisn yang diambil dari data siswa, atau bisa download excelnya yang lengkap berisi data siswa dan foto disamping kanan
+
+Arahan & Solusi Fitur Agar Aplikasi EfisienAgar aplikasi buatanmu jauh lebih cepat digunakan dan tidak membuat tangan pegal, pertimbangkan peningkatan fitur berikut:Gunakan Mode "Click-to-Assign" / Navigasi Keyboard:Jangan hanya mengandalkan drag & drop.Buat sistem navigasi keyboard: Pilih foto di pool $\rightarrow$ Tekan Enter $\rightarrow$ foto otomatis terpasang ke siswa di baris aktif, dan focus kursor langsung berpindah ke baris siswa berikutnya. Ini 5x lebih cepat daripada drag & drop.Generasi Thumbnail Ringan (Lazy Loading):Jangan tampilkan file foto asli di grid preview. Generate thumbnail resolusi rendah (misal maks 150px / kompresi Canvas) untuk tampilan UI, baru gunakan file asli saat proses export/download.
+
+Fitur "Skip" & "Delete Junk":
+
+Beri tombol Quick Delete pada pool foto di atas untuk membuang foto buram/salah ambil tanpa harus memasukkannya ke tabel siswa.
+
+Nah, mode click to assign bagus juga, pemilihan bisa tinggal pilih dengan arrow atau cursor, dan tabel data cuma preview atau tempat untuk foto, nah jika untuk tabel nanti bisa dibuatkan filter perkelas, jadi kalo emang cocok bisa langsung auto fill, jika ada foto yg tidak ada krna tidak masuk atau foto acak krna siswa absen awal terlambat foto bisa di masukkan dulu dengan memilih daftar fotonya, setelah siswa yg acak selesai bisa auto fill,
+
+
+
+Lalu setelah itu bisa langsung download perkelas bre, dri pada semua siswa sekaligus, jadi setelah kelas A fix benar, langsung download saja, lalu ganti kelas di filternya, lalu upload foto-foto baru, biar jadi one page, sebelah kanan ada tool" nya untuk filter kelas, button download foto, button export excel, auto fill dan lainnya, nah ditengah dibagi dua, yang bawah untuk preview tabel siswa siswanya, dan atasnya yang cuma 15-20% tinggi layar berisi daftar foto, dan terakhir sebelah kiri untuk preview folder tempat foto disimpan di explorer, jadi tinggal drag&drop folder kelas ke daftar foto yang panel atas, dan siap dieksekusi
+
+Kelebihan Utama Konsep Ini
+Layout 4 Zona (Dashboard Workspace): Pembagian Panel Kiri (Explorer), Panel Atas (Pool Foto), Panel Tengah (Tabel), dan Panel Kanan (Control Tools) sangat ergonomis. Mirip layout software editing profesional.
+
+Metode Exception-First: Mengisi foto siswa yang terlambat/susulan secara manual terlebih dahulu, baru menembakkan Auto-fill untuk sisanya adalah solusi yang sangat pas dengan kondisi riil di sekolah.
+
+Batch Processing Per Kelas: Mengunduh ZIP per kelas mencegah file size terlalu membengkak dan memudahkan pengarsipan folder di komputer.
+
+Catatan Kritis & Potensi Edge Case
+Agar aplikasi ini makin bulletproof saat digunakan, ada beberapa detail teknis dan potensi masalah yang perlu kamu atur logika code-nya dari awal:
+
+1. Masalah "Off-by-One" / Geser Urutan (Efek Domino)
+
+Masalah: Saat auto-fill, ternyata di tengah-tengah ada 1 foto yang terlewat (misal siswa B tidak foto), sehingga 20 siswa di bawahnya jadi geser salah semua.
+
+Solusi: Buat fitur "Insert Blank / Shift Down" di tabel. Jika ada urutan yang geser, kamu tinggal klik tombol Shift, dan seluruh foto dari baris tersebut ke bawah akan terdorong turun 1 baris tanpa harus memasangkan ulang dari awal.
+
+2. Pengelolaan Memori Browser (Object URL)
+
+Masalah: Mengunggah folder berisi ratusan foto langsung ke browser bisa membuat lag jika file dirender langsung dari memori.
+
+Solusi: Gunakan URL.createObjectURL(file) untuk preview foto di pool dan tabel. Ini jauh lebih ringan karena browser hanya membaca pointer filenya, bukan memuat seluruh blob gambar ke RAM. Panggil URL.revokeObjectURL() saat mengganti filter kelas untuk membersihkan RAM.
+
+3. Navigasi Keyboard yang Responsif
+
+Masalah: Penggunaan mouse terus-menerus untuk pilih foto lalu klik tabel masih terasa lambat.
+
+Solusi: Buat keyboard shortcut focus state:
+
+Arrow Left / Right: Memilih foto di panel atas.
+
+Arrow Up / Down: Memilih baris siswa di tabel.
+
+Space / Enter: Memasangkan foto terpilih ke baris siswa aktif, lalu otomatis memindahkan fokus ke baris siswa di bawahnya.
+
+4. Penanganan Drag & Drop Folder di Browser
+
+Masalah: Menggeser folder lokal ke browser membutuhkan penanganan khusus agar struktur filenya terbaca rapi.
+
+Solusi: Gunakan HTML5 Drag and Drop API gabungan dengan webkitGetAsEntry() untuk membaca isi folder secara recursive, atau gunakan <input type="file" webkitdirectory> pada panel explorer kiri.
+
+5. Auto-Save Draft (State Persistence)
+
+Masalah: Jika tab browser tidak sengaja tertutup saat kamu baru selesai mencocokkan 80% data kelas A, semua progres akan hilang.
+
+Solusi: Simpan state pencocokan sementara ke IndexedDB atau LocalStorage. Begitu halaman di-refresh, aplikasi bisa menawarkan "Lanjutkan pekerjaan Kelas A yang belum di-download?".
+
+Rekomendasi Stack Pemrograman
+Frontend: React / Vue.js + Tailwind CSS (Sangat fleksibel untuk membuat tata letak grid dashboard 4 zona dan mengatur state interaktif).
+
+Zip Generator: JSZip + FileSaver.js (Memungkinkan ekspor ZIP berisi foto yang sudah di-rename menjadi NISN langsung dari browser tanpa perlu kirim file balik ke server backend).
+
+Excel Processing: xlsx (SheetJS) untuk import data siswa dari Excel dan export kembali Excel beserta path/embed gambarnya.
+
+mungkin bisa menambahkan seting di panel kanan (control tools) berisi format nama yang akan digunakan, bisa pakai nisn, atau namanya atau bahkan tanggal lahir, tinggal ketik / dropdown untuk ini, tergantung kebutuhan pengguna mau dibuat jadi nama atau nisn atau yg lainnya yang ada di header tersebut.
+
+1. Gunakan Sistem Variable Tag (Template Engine)Daripada cuma dropdown kaku, kombinasikan dengan text input berbasis tag yang diambil otomatis dari header tabel Excel yang di-upload.Mekanisme: Pembaca Excel membaca baris pertama (header) dan menjadikannya variabel seperti {nisn}, {nama}, {tgl_lahir}, {kelas}.Input Field: User bisa mengetik format kustom di kolom teks, misal: {kelas}_{nisn}_{nama}.Quick Presets: Sediakan tombol pemicu cepat di bawahnya, seperti:[NISN Only] $\rightarrow$ {nisn}[NISN + Nama] $\rightarrow$ {nisn}_{nama}[Kelas + NISN] $\rightarrow$ {kelas}_{nisn}
+
+2. Wajib Sanitasi Karakter Ilegal (Sangat Krusial!)Nama siswa sering kali memiliki karakter khusus seperti petik ('), garis miring (/), titik, atau tanda petik dua ("). Sistem operasi seperti Windows akan crash atau error saat membuat file ZIP jika nama filenya mengandung karakter \ / : * ? " < > |.Solusi Logic: Jalankan fungsi string.replace() atau Regex untuk menghapus/mengganti karakter ilegal menjadi garis bawah (_) sebelum file di-generate.Contoh: Ahmad Syafi'i/2026 $\rightarrow$ Ahmad_Syafi_i_2026
+
+3. Live Preview Output Nama File
+Sediakan kotak Live Preview kecil persis di bawah kontrol setting penamaan.
+
+Saat user mengetik format {nisn}_{nama}, di bawahnya langsung menampilkan contoh hasil riil dari data baris pertama:
+
+Preview Nama File: 0012345678_Ahmad_Fauzi.jpg
+
+Ini membantu user memastikan tidak ada variabel yang salah ketik sebelum menekan tombol ekspor.
+
+Nah untuk cell yg kosong bisa diisi NULL saja saat di aplikasi dan hasil export
+
+Rekomendasi Stack & Setup Tauri
+Untuk membangun aplikasi ini dengan fleksibel:
+
+Frontend (UI/UX): React atau Vue + Tailwind CSS + Lucide Icons.
+
+Gunakan komponen Virtual List / Virtual Grid (seperti react-window atau vue-virtual-scroller) agar UI hanya merender foto yang tampak di layar saja.
+
+Backend (Tauri Core):
+
+tauri-plugin-dialog: Untuk membuka native Windows folder picker atau file picker Excel.
+
+tauri-plugin-fs: Untuk operasi baca, salin, dan ubah nama file lokal secara aman.
+
+calamine (Rust Crate): Jika ingin membaca file Excel .xlsx dengan cepat di sisi backend, atau tetap gunakan sheetjs di frontend.
+
