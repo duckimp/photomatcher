@@ -17,22 +17,22 @@ jobs:
           # Windows x64 (64-bit)
           - platform: 'windows-latest'
             args: '--target x86_64-pc-windows-msvc'
-            target: 'x86_64-pc-windows-msvc'
+            rust-targets: 'x86_64-pc-windows-msvc'
 
           # Windows x86 (32-bit)
           - platform: 'windows-latest'
             args: '--target i686-pc-windows-msvc'
-            target: 'i686-pc-windows-msvc'
+            rust-targets: 'i686-pc-windows-msvc'
 
-          # Linux (Debian / Ubuntu .deb & .AppImage)
+          # Linux x64 (.deb & .AppImage)
           - platform: 'ubuntu-22.04'
             args: '--target x86_64-unknown-linux-gnu'
-            target: 'x86_64-unknown-linux-gnu'
+            rust-targets: 'x86_64-unknown-linux-gnu'
 
-          # macOS Universal (.dmg)
+          # macOS Universal (.dmg) — harus install kedua target, bukan universal-apple-darwin
           - platform: 'macos-latest'
             args: '--target universal-apple-darwin'
-            target: 'universal-apple-darwin'
+            rust-targets: 'aarch64-apple-darwin,x86_64-apple-darwin'
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -48,13 +48,19 @@ jobs:
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
-          targets: ${{ matrix.target }}
+          # Install the actual Rust target triples (bukan "universal-apple-darwin")
+          targets: ${{ matrix.rust-targets }}
 
       - name: Install Linux dependencies (Ubuntu only)
         if: matrix.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf libjavascriptcoregtk-4.1-dev
+          sudo apt-get install -y \
+            libwebkit2gtk-4.1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            patchelf \
+            libjavascriptcoregtk-4.1-dev
 
       - name: Install Node dependencies
         run: npm ci || npm install
@@ -73,9 +79,9 @@ jobs:
             
             ### 📥 Download Installer:
             - **Windows 64-bit (.exe / .msi)**: `PhotoMatcher.id_*_x64-setup.exe`
-            - **Windows 32-bit (.exe / .msi)**: `PhotoMatcher.id_*_x86-setup.exe`
+            - **Windows 32-bit (.exe)**: `PhotoMatcher.id_*_x86-setup.exe`
             - **Linux (.deb)**: `photomatcher-id_*_amd64.deb`
-            - **macOS (.dmg)**: `PhotoMatcher.id_*_universal.dmg`
+            - **macOS Universal (.dmg)**: `PhotoMatcher.id_*_universal.dmg`
             
             *100% Client-Side Safe, Memory-First Architecture.*
           releaseDraft: false
